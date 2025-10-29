@@ -28,7 +28,7 @@ Stores:
 ## 💿 Installation
 
 ```bash
-git clone https://github.com/jakobhindemith/webcrawler_links
+git clone https://github.com/jakobx0/webcrawler_links
 cd webcrawler_links
 cargo run (if rust is installed: https://www.rust-lang.org/tools/install )
 ```
