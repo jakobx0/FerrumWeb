@@ -2,7 +2,7 @@ use rusqlite::{params, Connection, Result};
 
 pub fn init_db() -> Result<Connection> {
     //opens an connection -> links.db
-    let conn = Connection::open("links.db")?;
+    let conn = Connection::open("data/links.db")?;
     //create Table with all informations
     conn.execute(
         "CREATE TABLE IF NOT EXISTS link (
