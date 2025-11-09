@@ -32,14 +32,20 @@ cd FerrumWeb
 cargo run (if rust is not installed: https://www.rust-lang.org/tools/install )
 ```
 
-## Troubleshooting:
+## ‼️Troubleshooting:
 
-On Windows the Error: `linker 'link.exe' not found` can be resolved via:
+On Windows the Error: `linker 'link.exe' not found` can be solved via:
 
 ```bash
 rustup toolchain install stable-x86_64-pc-windows-gnu
 rustup default stable-x86_64-pc-windows-gnu
 ```
+For Linux the Error: `failed to run custom build command for 'openssl-sys v0.9.109'`:
+
+```bash
+sudo apt install libssl-dev
+```
+
 
 Rust help: https://users.rust-lang.org/t/link-exe-not-found-despite-build-tools-already-installed/47080
 
