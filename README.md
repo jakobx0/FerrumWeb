@@ -6,18 +6,17 @@ This is a recursive web crawler written in **Rust** that visits websites, extrac
 <img width="720" height="770" alt="grafik" src="https://github.com/user-attachments/assets/ae13b986-6fbb-4978-8364-91a8d6fb77ee" />
 </div>
 
-## 🔍 Features
+## Features
 
--  Extracts all HTML links (`<a href="...">`)  
-Stores:
-  - the discovered URL wtih a unique ID and parent ID
-  -  Persists data in a SQLite database (table: `link`)
-  -  Recursively crawls websites up to a configurable depth  
+- Extracts all HTML links on the site
+- Stores the discovered URL wtih a unique ID and parent ID
+- Persists data in a SQLite database (table: `link`)
+- Recursively crawls websites up to a configurable depth  
 
 ## Planned Feature
 
-- Each link is saved with its **parent URL** and **depth level**, allowing to visualize a structured hierarchy of web with the help of [`egui_graphs`] (https://crates.io/crates/egui_graphs/0.9.0)
-- for more information about egui_graphs go to: https://deepwiki.com/blitzarx1/egui_graphs/1-overview
+- Each link is saved with its **parent URL** and **depth level**, allowing to visualize a structured hierarchy of web with the help of Python and the NetworkX package
+- for more information: https://networkx.org/
 
 ## 📦 Crates
 
@@ -28,12 +27,23 @@ Stores:
 ## 💿 Installation
 
 ```bash
-git clone https://github.com/jakobx0/webcrawler_links
-cd webcrawler_links
-cargo run (if rust is installed: https://www.rust-lang.org/tools/install )
+git clone https://github.com/jakobx0/FerrumWeb
+cd FerrumWeb
+cargo run (if rust is not installed: https://www.rust-lang.org/tools/install )
 ```
 
-## 💡Usage
+## Troubleshooting:
+
+On Windows the Error: `linker 'link.exe' not found` can be resolved via:
+
+```bash
+rustup toolchain install stable-x86_64-pc-windows-gnu
+rustup default stable-x86_64-pc-windows-gnu
+```
+
+Rust help: https://users.rust-lang.org/t/link-exe-not-found-despite-build-tools-already-installed/47080
+
+## Usage
 
 When the program starts, it asks for a URL and begins crawling from that page. All discovered links are stored recursively in a database. The resulting structure is useful for analyzing site architectures or detecting broken links.
 
