@@ -9,7 +9,7 @@ use std::time:: Instant;
 fn main() {
 
     //file .txt -> rename
-    let path = Path::new("C:\\Rust\\FerrumWeb\\data\\link_results.txt");
+    let path = Path::new("data/link_results.txt");
     let mut file = File::create(path).expect("error create file");
     
     //commandline input
