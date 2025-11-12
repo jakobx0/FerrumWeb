@@ -1,4 +1,18 @@
 /target
-links.db
-link_results.txt
+
 .idea/vcs.xml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Visualization outputs
+link_hierarchy_*.png

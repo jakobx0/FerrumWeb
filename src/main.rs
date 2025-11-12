@@ -1,19 +1,15 @@
 mod crawler;
 mod db;
-mod window;
-mod window;
 use std::path::Path;
 use std::io;
 use std::fs::File;
 use std::time:: Instant;
 
-use crate::window::window_view;
-
 //read url's
 fn main() {
 
     //file .txt -> rename
-    let path = Path::new("C:\\Rust\\webcrawler_links\\link_results.txt");
+    let path = Path::new("data/link_results.txt");
     let mut file = File::create(path).expect("error create file");
     
     //commandline input
@@ -35,10 +31,6 @@ fn main() {
     println!("Enter depth to search: ");
     io::stdin().read_line(&mut depth_str).expect( "depth input error");
     let depth_max: usize = depth_str.trim().parse().expect("musst be a non negative integer");
-
-    //start window -> only continues search when window is closed :( 
-    //TODO: Control flow
-    window::window_view().expect("Failed to call window_view");
     
     //db Connection -> init
     let conn = db::init_db().expect("DB Fail");
