@@ -22,12 +22,9 @@ Each link is saved with its **parent URL** and **depth level**, allowing you to 
 Install Python dependencies:
 
 ```bash
-pip install -r requirements.txt
-```
-
-**Note:** If you encounter issues installing `pygraphviz`, you can install just the core dependencies:
-```bash
-pip install networkx matplotlib
+pip install networkx
+pip install matplotlib
+pip install pygraphviz
 ```
 
 ### Usage
@@ -49,15 +46,6 @@ python visualize_hierarchy.py --full-urls
 
 # Custom output file prefix
 python visualize_hierarchy.py --output-prefix my_site
-```
-
-**Testing with sample data:**
-
-If you want to test the visualization without crawling a website first, create a test database:
-
-```bash
-python create_test_data.py
-python visualize_hierarchy.py --db data/links_test.db
 ```
 
 **Available layouts:**
