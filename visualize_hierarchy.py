@@ -12,7 +12,7 @@ import argparse
 from urllib.parse import urlparse
 
 
-def load_links_from_db(db_path='data/links.db'):
+def load_links_from_db(db_path='data/links_test.db'):
     """Load links and their relationships from the SQLite database."""
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
@@ -224,8 +224,8 @@ def main():
     )
     parser.add_argument(
         '--db',
-        default='data/links.db',
-        help='Path to SQLite database (default: data/links.db)'
+        default='data/links_test.db',
+        help='Path to SQLite database (default: data/links_test.db)'
     )
     parser.add_argument(
         '--max-depth',
