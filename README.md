@@ -13,10 +13,64 @@ This is a recursive web crawler written in **Rust** that visits websites, extrac
 - Persists data in a SQLite database (table: `link`)
 - Recursively crawls websites up to a configurable depth  
 
-## Planned Feature
+## 📊 Visualization
 
-- Each link is saved with its **parent URL** and **depth level**, allowing to visualize a structured hierarchy of web with the help of Python and the NetworkX package
-- for more information: https://networkx.org/
+Each link is saved with its **parent URL** and **depth level**, allowing you to visualize the structured hierarchy of your crawled website using Python and the NetworkX library.
+
+### Setup
+
+Install Python dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+**Note:** If you encounter issues installing `pygraphviz`, you can install just the core dependencies:
+```bash
+pip install networkx matplotlib
+```
+
+### Usage
+
+After crawling a website, visualize the link hierarchy:
+
+```bash
+# Generate all visualization layouts
+python visualize_hierarchy.py
+
+# Generate only tree layout
+python visualize_hierarchy.py --layout tree
+
+# Limit visualization to specific depth
+python visualize_hierarchy.py --max-depth 2
+
+# Show full URLs instead of shortened versions
+python visualize_hierarchy.py --full-urls
+
+# Custom output file prefix
+python visualize_hierarchy.py --output-prefix my_site
+```
+
+**Testing with sample data:**
+
+If you want to test the visualization without crawling a website first, create a test database:
+
+```bash
+python create_test_data.py
+python visualize_hierarchy.py --db data/links_test.db
+```
+
+**Available layouts:**
+- **Tree layout**: Hierarchical tree structure (requires graphviz)
+- **Circular layout**: Concentric circles grouped by depth
+- **Shell layout**: Shell-based layout with depth grouping
+
+**Output files:**
+- `link_hierarchy_tree.png` - Hierarchical tree visualization
+- `link_hierarchy_circular.png` - Circular depth-based layout
+- `link_hierarchy_shell.png` - Shell layout visualization
+
+For more information about NetworkX: https://networkx.org/
 
 ## 📦 Crates
 
