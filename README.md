@@ -13,8 +13,45 @@ This is a recursive web crawler written in **Rust** that visits websites, extrac
 - Persists data in a SQLite database (table: `link`)
 - Recursively crawls websites up to a configurable depth  
 
-## Planned Feature
+## 📊 Visualization
 
+Each link is saved with its **parent URL** and **depth level**, allowing you to visualize the structured hierarchy of your crawled website using Python and the NetworkX library.
+
+<div align ="center">
+<img width="720" height="770" alt="grafik" src=![FerrumWeb](test_png/link_hierarchy_tree.png) />
+</div>
+
+### Usage
+
+After crawling a website, visualize the link hierarchy using visualize_hierachy.py:
+
+```bash
+# To test run
+python -u ".../link_db_test.py.py" #Fills the database
+python -u ".../visualize_hierarchy.py" --db ./data/links_test.db 
+
+# Generate all visualization layouts
+python -u ".../visualize_hierarchy.py"
+
+# Generate only tree layout
+python -u ".../visualize_hierarchy.py" --layout tree
+
+# Limit visualization to specific depth
+python -u ".../visualize_hierarchy.py" --max-depth 2
+
+# Custom output file prefix
+python -u ".../visualize_hierarchy.py" --output-prefix my_site
+```
+
+**Available layouts:**
+- **Tree layout**: Hierarchical tree structure (requires graphviz)
+- **Circular layout**: Concentric circles grouped by depth
+
+**Output files:**
+- `link_hierarchy_tree.png` - Hierarchical tree visualization
+- `link_hierarchy_circular.png` - Circular depth-based layout
+
+For more information about NetworkX: https://networkx.org/
 - Each link is saved with its **parent URL** and **depth level**, allowing to visualize a structured hierarchy of web with the help of Python and the NetworkX package
 - for more information: https://networkx.org/
 
@@ -26,11 +63,20 @@ This is a recursive web crawler written in **Rust** that visits websites, extrac
 
 ## 💿 Installation
 
+Install Python dependencies:
+
+```bash
+pip install networkx
+pip install matplotlib
+```
+
 ```bash
 git clone https://github.com/jakobx0/FerrumWeb
 cd FerrumWeb
 cargo run (if rust is not installed: https://www.rust-lang.org/tools/install )
 ```
+
+Rust help: https://users.rust-lang.org/t/link-exe-not-found-despite-build-tools-already-installed/47080
 
 ## ‼️Troubleshooting:
 
@@ -46,10 +92,7 @@ For Linux the Error: `failed to run custom build command for 'openssl-sys v0.9.1
 sudo apt install libssl-dev
 ```
 
-
-Rust help: https://users.rust-lang.org/t/link-exe-not-found-despite-build-tools-already-installed/47080
-
-## Usage
+## DB Usage
 
 When the program starts, it asks for a URL and begins crawling from that page. All discovered links are stored recursively in a database. The resulting structure is useful for analyzing site architectures or detecting broken links.
 
