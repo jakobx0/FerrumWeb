@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 FerrumWeb Hierarchy Visualizer
 Visualizes the hierarchical structure of crawled links using NetworkX
@@ -12,7 +11,7 @@ import argparse
 from urllib.parse import urlparse
 
 
-def load_links_from_db(db_path='data/links_test.db'):
+def load_links_from_db(db_path='data/links.db'):
     """Load links and their relationships from the SQLite database."""
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
@@ -224,8 +223,8 @@ def main():
     )
     parser.add_argument(
         '--db',
-        default='data/links_test.db',
-        help='Path to SQLite database (default: data/links_test.db)'
+        default='data/links.db',
+        help='Path to SQLite database (default: data/links.db)'
     )
     parser.add_argument(
         '--max-depth',
