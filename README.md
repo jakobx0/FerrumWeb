@@ -17,8 +17,8 @@ This is a recursive web crawler written in **Rust** that visits websites, extrac
 
 Each link is saved with its **parent URL** and **depth level**, allowing you to visualize the structured hierarchy of your crawled website using Python and the NetworkX library.
 
-<div align ="center">
-<img width="720" height="770" alt="grafik" src=![FerrumWeb](test_png/link_hierarchy_tree.png) />
+<div align="center">
+  <img width="720" height="770" src="test_png/link_hierarchy_tree.png" alt="FerrumWeb">
 </div>
 
 ### Usage
