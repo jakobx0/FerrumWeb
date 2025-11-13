@@ -10,29 +10,22 @@ from collections import defaultdict
 import argparse
 from urllib.parse import urlparse
 
-
+#Load links and their relationships from the SQLite database
 def load_links_from_db(db_path='data/links.db'):
-    """Load links and their relationships from the SQLite database."""
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
-    # Fetch all links with their parent relationships
+    #Fetch all links with their parent relationships
     cursor.execute("SELECT id, URL, parent_id, depth FROM link ORDER BY depth, id")
     rows = cursor.fetchall()
     conn.close()
 
+    #rows format: (id, url, parent_id, depth)
     return rows
 
-
+#Create a directed graph from the database rows.
 def create_graph(rows, max_depth=None, shorten_urls=True):
-    """
-    Create a directed graph from the database rows.
 
-    Args:
-        rows: Database rows containing (id, url, parent_id, depth)
-        max_depth: Maximum depth to include (None for all)
-        shorten_urls: Whether to shorten URLs for better readability
-    """
     G = nx.DiGraph()
 
     # Store node attributes
@@ -43,16 +36,8 @@ def create_graph(rows, max_depth=None, shorten_urls=True):
         # Skip if beyond max_depth
         if max_depth is not None and depth > max_depth:
             continue
-
-        # Shorten URL for label if requested
-        if shorten_urls:
-            parsed = urlparse(url)
-            path = parsed.path if parsed.path else '/'
-            if len(path) > 40:
-                path = path[:37] + '...'
-            label = f"{parsed.netloc}{path}"
-        else:
-            label = url
+        
+        label = url
 
         # Add node
         G.add_node(node_id, url=url, depth=depth, label=label)
@@ -65,22 +50,23 @@ def create_graph(rows, max_depth=None, shorten_urls=True):
 
     return G, node_labels, node_depths
 
-
+#tree -> visualize using hierarchical tree layout
 def visualize_tree_layout(G, node_labels, node_depths, output_file='link_hierarchy_tree.png'):
-    """Visualize the graph using a hierarchical tree layout."""
     if len(G.nodes()) == 0:
         print("No nodes to visualize!")
         return
 
-    plt.figure(figsize=(20, 12))
+    try:
+        plt.figure(figsize=(20, 12))
+    except:
+        print("Warning: Unable to set figure size, using default.")
 
     # Use graphviz layout for hierarchical structure (if available)
     try:
-        pos = nx.nx_agraph.graphviz_layout(G, prog='dot')
+        pos = nx.spring_layout(G, k=2, iterations=50, seed=42)
     except:
         # Fallback to spring layout with custom parameters
-        print("Warning: graphviz not available, using spring layout")
-        pos = nx.spring_layout(G, k=2, iterations=50, seed=42)
+        print("Error: spring layout not available.")
 
     # Color nodes by depth
     max_depth = max(node_depths.values()) if node_depths else 1
@@ -102,9 +88,8 @@ def visualize_tree_layout(G, node_labels, node_depths, output_file='link_hierarc
     print(f"Tree layout visualization saved to: {output_file}")
     plt.close()
 
-
+#Visualize the graph using a circular layout grouped by depth.
 def visualize_circular_layout(G, node_labels, node_depths, output_file='link_hierarchy_circular.png'):
-    """Visualize the graph using a circular layout grouped by depth."""
     if len(G.nodes()) == 0:
         print("No nodes to visualize!")
         return
@@ -148,45 +133,6 @@ def visualize_circular_layout(G, node_labels, node_depths, output_file='link_hie
     plt.tight_layout()
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     print(f"Circular layout visualization saved to: {output_file}")
-    plt.close()
-
-
-def visualize_shell_layout(G, node_labels, node_depths, output_file='link_hierarchy_shell.png'):
-    """Visualize using shell layout with nodes grouped by depth."""
-    if len(G.nodes()) == 0:
-        print("No nodes to visualize!")
-        return
-
-    plt.figure(figsize=(14, 14))
-
-    # Group nodes by depth for shell layout
-    depth_groups = defaultdict(list)
-    for node, depth in node_depths.items():
-        depth_groups[depth].append(node)
-
-    # Create shells (sorted by depth)
-    shells = [depth_groups[d] for d in sorted(depth_groups.keys())]
-
-    # Create shell layout
-    pos = nx.shell_layout(G, shells)
-
-    # Color nodes by depth
-    max_depth = max(node_depths.values()) if node_depths else 1
-    colors = [plt.cm.cool(node_depths[node] / max_depth) for node in G.nodes()]
-
-    # Draw the graph
-    nx.draw_networkx_nodes(G, pos, node_color=colors, node_size=400, alpha=0.9)
-    nx.draw_networkx_edges(G, pos, edge_color='gray', arrows=True,
-                          arrowsize=10, alpha=0.5, width=1.5)
-
-    if len(G.nodes()) < 40:
-        nx.draw_networkx_labels(G, pos, node_labels, font_size=7)
-
-    plt.title('Link Hierarchy - Shell Layout', fontsize=16, fontweight='bold')
-    plt.axis('off')
-    plt.tight_layout()
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
-    print(f"Shell layout visualization saved to: {output_file}")
     plt.close()
 
 
@@ -234,14 +180,9 @@ def main():
     )
     parser.add_argument(
         '--layout',
-        choices=['tree', 'circular', 'shell', 'all'],
+        choices=['tree', 'circular', 'all'],
         default='all',
         help='Layout type for visualization (default: all)'
-    )
-    parser.add_argument(
-        '--full-urls',
-        action='store_true',
-        help='Show full URLs instead of shortened versions'
     )
     parser.add_argument(
         '--output-prefix',
@@ -261,11 +202,9 @@ def main():
         return
 
     # Create graph
-    print("Creating graph structure...")
     G, node_labels, node_depths = create_graph(
         rows,
         max_depth=args.max_depth,
-        shorten_urls=not args.full_urls
     )
 
     # Print statistics
@@ -281,11 +220,6 @@ def main():
         print("Generating circular layout...")
         visualize_circular_layout(G, node_labels, node_depths,
                                  f'{args.output_prefix}_circular.png')
-
-    if args.layout in ['shell', 'all']:
-        print("Generating shell layout...")
-        visualize_shell_layout(G, node_labels, node_depths,
-                              f'{args.output_prefix}_shell.png')
 
     print("\nVisualization complete!")
 
