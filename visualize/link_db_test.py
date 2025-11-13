@@ -28,7 +28,25 @@ staff_links = [
     (7, 'http://example.com/contact/map', 3, 2),
     (8, 'http://example.com/blog', 1, 1),
     (9, 'http://example.com/blog/post1', 8, 2),
-    (10, 'http://example.com/blog/post2', 8, 2) ]
+    (10, 'http://example.com/blog/post2', 8, 2),
+    (11, 'http://example.com/blog/post3', 8, 2 ),
+    (12, 'http://example.com/blog/post4', 8, 2),
+    (13, 'http://example.com/blog/post5', 8, 2),
+    (14, 'http://example.com/blog/post6', 8, 2),
+    (15, 'http://example.com/blog/post7', 8, 2),
+    (16, 'http://example.com/blog/post8', 8, 2),
+    (17, 'http://example.com/blog/post9', 8, 2),
+    (18, 'http://example.com/blog/post10', 8, 2),
+    (19, 'http://example.com/blog/post11', 8, 2),
+    (20, 'http://example.com/blog/post12', 8, 2),
+    (21, 'http://example.com/blog/post13', 8, 2),
+    (22, 'http://example.com/blog/post14', 8, 2),
+    (23, 'http://example.com/blog/post15', 8, 2),
+    (24, 'http://example.com/blog/post16', 8, 2),
+    (25, 'http://example.com/blog/post17', 8, 2),
+    (26, 'http://example.com/blog/post18', 8, 2),
+    (27, 'http://example.com/blog/post19', 8, 2),
+    (28, 'http://example.com/blog/post20', 8, 2) ]
 
 #insert data into table
 for p in staff_links:
@@ -36,3 +54,4 @@ for p in staff_links:
     cursor.execute(formatted_sql, p)
 connection.commit()
 connection.close()
+

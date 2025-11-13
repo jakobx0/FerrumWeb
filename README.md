@@ -17,46 +17,39 @@ This is a recursive web crawler written in **Rust** that visits websites, extrac
 
 Each link is saved with its **parent URL** and **depth level**, allowing you to visualize the structured hierarchy of your crawled website using Python and the NetworkX library.
 
-### Setup
-
-Install Python dependencies:
-
-```bash
-pip install networkx
-pip install matplotlib
-pip install pygraphviz
-```
+<div align ="center">
+<img width="720" height="770" alt="grafik" src=![FerrumWeb](test_png/link_hierarchy_tree.png) />
+</div>
 
 ### Usage
 
-After crawling a website, visualize the link hierarchy:
+After crawling a website, visualize the link hierarchy using visualize_hierachy.py:
 
 ```bash
+# To test run
+python -u ".../link_db_test.py.py" #Fills the database
+python -u ".../visualize_hierarchy.py" --db ./data/links_test.db 
+
 # Generate all visualization layouts
-python visualize_hierarchy.py
+python -u ".../visualize_hierarchy.py"
 
 # Generate only tree layout
-python visualize_hierarchy.py --layout tree
+python -u ".../visualize_hierarchy.py" --layout tree
 
 # Limit visualization to specific depth
-python visualize_hierarchy.py --max-depth 2
-
-# Show full URLs instead of shortened versions
-python visualize_hierarchy.py --full-urls
+python -u ".../visualize_hierarchy.py" --max-depth 2
 
 # Custom output file prefix
-python visualize_hierarchy.py --output-prefix my_site
+python -u ".../visualize_hierarchy.py" --output-prefix my_site
 ```
 
 **Available layouts:**
 - **Tree layout**: Hierarchical tree structure (requires graphviz)
 - **Circular layout**: Concentric circles grouped by depth
-- **Shell layout**: Shell-based layout with depth grouping
 
 **Output files:**
 - `link_hierarchy_tree.png` - Hierarchical tree visualization
 - `link_hierarchy_circular.png` - Circular depth-based layout
-- `link_hierarchy_shell.png` - Shell layout visualization
 
 For more information about NetworkX: https://networkx.org/
 
@@ -67,6 +60,13 @@ For more information about NetworkX: https://networkx.org/
 - [`rusqlite`](https://docs.rs/rusqlite/) – SQLite database integration 
 
 ## 💿 Installation
+
+Install Python dependencies:
+
+```bash
+pip install networkx
+pip install matplotlib
+```
 
 ```bash
 git clone https://github.com/jakobx0/FerrumWeb

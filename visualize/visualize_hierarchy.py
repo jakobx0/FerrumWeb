@@ -1,7 +1,4 @@
-"""
-FerrumWeb Hierarchy Visualizer
-Visualizes the hierarchical structure of crawled links using NetworkX
-"""
+#Visualize the hierarchy of links stored in a FerrumWeb SQLite database using NetworkX and Matplotlib.
 
 import sqlite3
 import networkx as nx
@@ -164,9 +161,11 @@ def print_statistics(G, node_depths):
 
 
 def main():
+    #use --help for options
     parser = argparse.ArgumentParser(
         description='Visualize FerrumWeb link hierarchy using NetworkX'
     )
+    #to use teser python -u visualize_hierarchy.py --db data/links_test.db
     parser.add_argument(
         '--db',
         default='data/links.db',
@@ -222,7 +221,6 @@ def main():
                                  f'{args.output_prefix}_circular.png')
 
     print("\nVisualization complete!")
-
 
 if __name__ == '__main__':
     main()
