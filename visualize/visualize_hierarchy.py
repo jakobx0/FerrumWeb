@@ -58,11 +58,9 @@ def visualize_tree_layout(G, node_labels, node_depths, output_file='link_hierarc
     except:
         print("Warning: Unable to set figure size, using default.")
 
-    # Use graphviz layout for hierarchical structure (if available)
     try:
         pos = nx.spring_layout(G, k=2, iterations=50, seed=42)
     except:
-        # Fallback to spring layout with custom parameters
         print("Error: spring layout not available.")
 
     # Color nodes by depth
