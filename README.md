@@ -15,45 +15,49 @@ This is a recursive web crawler written in **Rust** that visits websites, extrac
 
 ## 📊 Visualization
 
-Each link is saved with its **parent URL** and **depth level**, allowing you to visualize the structured hierarchy of your crawled website using Python and the NetworkX library.
+Each link is saved with its **parent URL** and **depth level**, allowing you to visualize the structured hierarchy of your crawled website:
+
+## Static visualization with NetworkX library:
 
 <div align="center">
   <img width="720" height="770" src="test_png/link_hierarchy_tree.png" alt="FerrumWeb">
 </div>
 
-### Usage
+## Interactive visualization with PyVis:
+
+<div align="center">
+  <img width="819" height="646" alt="grafik" src="https://github.com/user-attachments/assets/38f67b70-e80e-4e88-8502-75566bef5218">
+</div>
+
+## Usage
 
 After crawling a website, visualize the link hierarchy using visualize_hierachy.py:
 
 ```bash
-# To test run
+#To test run
 python -u ".../link_db_test.py.py" #Fills the database
 python -u ".../visualize_hierarchy.py" --db ./data/links_test.db 
 
-# Generate all visualization layouts
+#Generate all visualization layouts
 python -u ".../visualize_hierarchy.py"
 
-# Generate only tree layout
-python -u ".../visualize_hierarchy.py" --layout tree
+#Generate static layout
+python -u ".../visualize_hierarchy.py" -s
+python -u ".../visualize_hierarchy.py" --static
 
-# Limit visualization to specific depth
-python -u ".../visualize_hierarchy.py" --max-depth 2
-
-# Custom output file prefix
-python -u ".../visualize_hierarchy.py" --output-prefix my_site
+#Genaerate interactive layout
+python -u ".../visualize_hierarchy.py" -i
+python -u ".../visualize_hierarchy.py" --interactive
 ```
 
 **Available layouts:**
-- **Tree layout**: Hierarchical tree structure (requires graphviz)
-- **Circular layout**: Concentric circles grouped by depth
+- **Tree layout**: Hierarchical tree structure
+- **dynamic layout**: interactive layout   
 
-**Output files:**
+**Output file (static grpah):**
 - `link_hierarchy_tree.png` - Hierarchical tree visualization
-- `link_hierarchy_circular.png` - Circular depth-based layout
 
 For more information about NetworkX: https://networkx.org/
-- Each link is saved with its **parent URL** and **depth level**, allowing to visualize a structured hierarchy of web with the help of Python and the NetworkX package
-- for more information: https://networkx.org/
 
 ## 📦 Crates
 
@@ -68,6 +72,7 @@ Install Python dependencies:
 ```bash
 pip install networkx
 pip install matplotlib
+pip install pyvis
 ```
 
 ```bash
