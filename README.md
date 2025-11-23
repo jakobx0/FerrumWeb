@@ -8,12 +8,12 @@ This is a recursive web crawler written in **Rust** that visits websites, extrac
 
 ## Features
 
-- Extracts all HTML links on the site
-- Stores the discovered URL wtih a unique ID and parent ID
+- Extracts all links on the site
 - Persists data in a SQLite database (table: `link`)
-- Recursively crawls websites up to a configurable depth  
+- Recursively crawls websites up to a configurable depth
+- Visualizes data in a static png or dynamic graph
 
-## 📊 Visualization
+## Visualization
 
 Each link is saved with its **parent URL** and **depth level**, allowing you to visualize the structured hierarchy of your crawled website:
 
@@ -50,22 +50,19 @@ python -u ".../visualize_hierarchy.py" -i
 python -u ".../visualize_hierarchy.py" --interactive
 ```
 
-**Available layouts:**
-- **Tree layout**: Hierarchical tree structure
-- **dynamic layout**: interactive layout   
-
-**Output file (static grpah):**
-- `link_hierarchy_tree.png` - Hierarchical tree visualization
+**Output file:**
+- [static graph] `link_hierarchy_tree.png` - Hierarchical tree visualization
+- [dynamic graph] `link_hierarchy.html` - interactive graph
 
 For more information about NetworkX: https://networkx.org/
 
-## 📦 Crates
+## Crates
 
 - [`reqwest`](https://docs.rs/reqwest/) – HTTP client  
 - [`scraper`](https://docs.rs/scraper/) – HTML parser  
 - [`rusqlite`](https://docs.rs/rusqlite/) – SQLite database integration 
 
-## 💿 Installation
+## Installation
 
 Install Python dependencies:
 
@@ -75,6 +72,9 @@ pip install matplotlib
 pip install pyvis
 ```
 
+PyVis: https://pyvis.readthedocs.io/en/latest/
+NetworkX: https://networkx.org/
+
 ```bash
 git clone https://github.com/jakobx0/FerrumWeb
 cd FerrumWeb
@@ -83,7 +83,7 @@ cargo run (if rust is not installed: https://www.rust-lang.org/tools/install )
 
 Rust help: https://users.rust-lang.org/t/link-exe-not-found-despite-build-tools-already-installed/47080
 
-## ‼️Troubleshooting:
+## Troubleshooting:
 
 On Windows the Error: `linker 'link.exe' not found` can be solved via:
 
@@ -98,8 +98,6 @@ sudo apt install libssl-dev
 ```
 
 ## DB Usage
-
-When the program starts, it asks for a URL and begins crawling from that page. All discovered links are stored recursively in a database. The resulting structure is useful for analyzing site architectures or detecting broken links.
 
 To analyse the DB file simply open a DBMS of your choice.
 For Example the **DB Browser for SQLite:**  https://sqlitebrowser.org/
