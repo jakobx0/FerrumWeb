@@ -3,16 +3,30 @@ use rusqlite::{params, Connection, Result};
 pub fn init_db() -> Result<Connection> {
     //opens an connection -> links.db
     let conn = Connection::open("data/links.db")?;
-    //create Table with all informations
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS link (
+    //create Table for URLs -> Classifikator
+    conn.execute_batch(
+
+
+        "PRAGMA foreign_keys = ON;
+
+        DROP TABLE IF EXISTS link;
+        DROP TABLE IF EXISTS classifikator;
+
+        CREATE TABLE IF NOT EXISTS classifikator (
+        classification_id INTEGER PRIMARY KEY,
+        classifikation TEXT UNIQUE
+        );
+
+        CREATE TABLE IF NOT EXISTS link (
         id INTEGER PRIMARY KEY,
         URL TEXT NOT NULL,
         parent_id INTEGER,
-        depth INTEGER
-        )",
-        (),
-    )?;
+        depth INTEGER,
+        classification_id INTEGER,
+        FOREIGN KEY(classification_id) REFERENCES classifikator(classification_id)
+        );"
+
+    ).expect("Failed to generate Tables");
     Ok(conn)
 }
 

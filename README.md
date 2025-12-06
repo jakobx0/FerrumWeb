@@ -3,7 +3,7 @@
 This is a recursive web crawler written in **Rust** that visits websites, extracts links, and stores them in a **SQLite database**.
 
 <div align ="center">
-<img width="720" height="770" alt="grafik" src="https://github.com/user-attachments/assets/ae13b986-6fbb-4978-8364-91a8d6fb77ee" />
+<img width="620" height="670" alt="grafik" src="https://github.com/user-attachments/assets/ae13b986-6fbb-4978-8364-91a8d6fb77ee" />
 </div>
 
 ## Features
@@ -20,7 +20,7 @@ Each link is saved with its **parent URL** and **depth level**, allowing you to 
 ## Static visualization with NetworkX library:
 
 <div align="center">
-  <img width="720" height="770" src="test_png/link_hierarchy_tree.png" alt="FerrumWeb">
+  <img width="720" height="770" src="png/link_hierarchy_tree.png" alt="FerrumWeb">
 </div>
 
 ## Interactive visualization with PyVis:
@@ -101,6 +101,10 @@ sudo apt install libssl-dev
 
 To analyse the DB file simply open a DBMS of your choice.
 For Example the **DB Browser for SQLite:**  https://sqlitebrowser.org/
+
+<div align="center">
+  <img width="520" height="300" src="png/db_tabels.png" alt="FerrumWeb">
+</div>
 
 Example SQL Queries:
 
