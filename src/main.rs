@@ -8,8 +8,10 @@ use std::time:: Instant;
 //read url's
 fn main() {
 
-    //file .txt -> rename
-    let path = Path::new("data/link_results.txt");
+    let path_db = Path::new("data/links.db");
+    let mut _file_db = File::create(path_db).expect("error create db file");
+    
+    let path = Path::new("data/links.txt");
     let mut file = File::create(path).expect("error create file");
     
     //commandline input
