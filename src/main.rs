@@ -11,9 +11,6 @@ fn main() {
     let path_db = Path::new("data/links.db");
     let mut _file_db = File::create(path_db).expect("error create db file");
     
-    let path = Path::new("data/links.txt");
-    let mut file = File::create(path).expect("error create file");
-    
     //commandline input
     let mut url_input = String::new();
     let mut depth_str = String::new();
@@ -48,7 +45,7 @@ fn main() {
     let start = Instant::now();
 
     //search links
-    match crawler::seaker(&conn, url_input, depth, &mut file, depth_max, parent_id) {
+    match crawler::seaker(&conn, url_input, depth, depth_max, parent_id) {
         Ok(_) => println!("Scraping successful!"),
         Err(e) => eprintln!("Error seaking : {}", e),
     }

@@ -3,11 +3,9 @@ use reqwest;
 use rusqlite::Connection;
 use scraper::{Html, Selector};
 use std::error::Error;
-use std::fs::File;
-use std::io::Write;
 
 // webscraper
-pub fn seaker(conn: &Connection, url_input: String, depth: usize, file: &mut File, depth_max: usize, mut parent_id: i32) -> Result<(), Box<dyn Error>> {
+pub fn seaker(conn: &Connection, url_input: String, depth: usize, depth_max: usize, mut parent_id: i32) -> Result<(), Box<dyn Error>> {
 
     //max depth to search through
     if depth > depth_max {
@@ -57,9 +55,6 @@ pub fn seaker(conn: &Connection, url_input: String, depth: usize, file: &mut Fil
             //parse absolute_link -> insert_link
             db::insert_link(conn ,&absolute_link, depth, parent_id)?;
 
-            //write links into file
-            file.write_all(absolute_link.as_bytes())?;
-            file.write_all(b"\n")?;
             //no doubles
             if !new_links.contains(&absolute_link){
                 new_links.push(absolute_link);
@@ -68,12 +63,9 @@ pub fn seaker(conn: &Connection, url_input: String, depth: usize, file: &mut Fil
     }
     println!("---------------------------------------------------");
 
-    //wait time -> performance
-    //thread::sleep(Duration::from_secs(2));
-
     //Recursive call -> new links -> search trough new links +1 depth
     for link in new_links{
-        seaker(conn, link, depth+1, file, depth_max, parent_id).expect("seaker error");
+        seaker(conn, link, depth+1, depth_max, parent_id).expect("seaker error");
     }
     Ok(())
 }
