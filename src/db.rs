@@ -9,12 +9,9 @@ pub fn init_db() -> Result<Connection> {
 
         "PRAGMA foreign_keys = ON;
 
-        DROP TABLE IF EXISTS link;
-        DROP TABLE IF EXISTS classifikator;
-
-        CREATE TABLE IF NOT EXISTS classifikator (
-        classification_id INTEGER PRIMARY KEY,
-        classifikation TEXT UNIQUE
+        CREATE TABLE IF NOT EXISTS categories (
+        category_id INTEGER PRIMARY KEY,
+        category TEXT UNIQUE
         );
 
         CREATE TABLE IF NOT EXISTS link (
@@ -22,8 +19,8 @@ pub fn init_db() -> Result<Connection> {
         URL TEXT NOT NULL,
         parent_id INTEGER,
         depth INTEGER,
-        classification_id INTEGER,
-        FOREIGN KEY(classification_id) REFERENCES classifikator(classification_id)
+        category_id INTEGER,
+        FOREIGN KEY(category_id) REFERENCES categories(category_id)
         );"
 
     ).expect("Failed to generate Tables");
