@@ -87,6 +87,17 @@ def visualize_tree_layout(G, node_labels, node_depths, output_file='link_hierarc
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
 
+#Search categories matching a keyword in URLs and assign category_id
+def match_keyword(db_path='data/links.db' ):
+    #Connect to database
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "UPDATE link SET category_id = (SELECT category_id FROM categories WHERE link.URL LIKE '%' || categories.category || '%')"
+    )
+    conn.commit()
+    conn.close()
 
 def visualize_interactive(G, node_depths, output_file='link_hierarchy.html'):
     #Visualize graph interactively using PyVis
@@ -100,6 +111,10 @@ def visualize_interactive(G, node_depths, output_file='link_hierarchy.html'):
     
     #Add nodes with custom styling
     max_depth = max(node_depths.values()) if node_depths else 1
+
+    #implement color for diffrent keywords
+    #keyword_colors = { id.category: -> color mapping
+    #...}
     
     # Define colors for depths (simple palette) -> implement a dynamic solution
     depth_colors = {
@@ -190,6 +205,14 @@ def main():
         help='Static image generation using NetworkX'
     )
     args = parser.parse_args()
+
+    #Match keywords to categories in DB
+    print(f"Matching keywords in database {args.db}...")
+    try:
+        match_keyword(args.db)
+    except Exception as e:
+        print(f"Error matching keywords: {e}")
+
 
     # Load data -> cmp args.db
     print(f"Loading links from {args.db}...")
