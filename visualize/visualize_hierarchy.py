@@ -3,7 +3,6 @@
 import sqlite3
 import sys
 import networkx as nx
-import matplotlib.pyplot as plt
 from collections import defaultdict
 import argparse
 from urllib.parse import urlparse
@@ -50,42 +49,6 @@ def create_graph(rows, max_depth=None, shorten_urls=True):
             G.add_edge(parent_id, node_id)
 
     return G, node_labels, node_depths
-
-#Tree -> visualize using spring layout
-def visualize_tree_layout(G, node_labels, node_depths, output_file='link_hierarchy_tree.png'):
-    #Check if graph has nodes
-    if len(G.nodes()) == 0:
-        print("No nodes to visualize!")
-        return
-
-    try:
-        plt.figure(figsize=(20, 12))
-    except:
-        print("Error: Unable to set figure size")
-
-    try:
-        pos = nx.spring_layout(G, k=2, iterations=50, seed=42)
-    except:
-        print("Error: spring layout")
-
-    #Color nodes by depth
-    max_depth = max(node_depths.values()) if node_depths else 1
-    colors = [plt.cm.viridis(node_depths[node] / max_depth) for node in G.nodes()]
-
-    #Draw the graph
-    try:
-        nx.draw_networkx_nodes(G, pos, node_color=colors, node_size=500, alpha=0.9)
-    except:
-        print("Error: draw_networkx_nodes")
-    try:
-        nx.draw_networkx_edges(G, pos, edge_color='gray', arrows=True, arrowsize=10, alpha=0.6, width=1.5)
-    except:
-        print("Error: draw_networkx_edges")
-
-    #Plot
-    plt.title('Link Hierarchy Visualization', fontsize=16, fontweight='bold')
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
-    plt.close()
 
 #Search categories matching a keyword in URLs and assign category_id
 def match_keyword(db_path='data/links.db' ):
@@ -199,11 +162,6 @@ def main():
         action='store_true',
         help='Generate interactive HTML visualization using PyVis'
     )
-    parser.add_argument(
-        '--static', '-s',
-        action='store_true',
-        help='Static image generation using NetworkX'
-    )
     args = parser.parse_args()
 
     #Match keywords to categories in DB
@@ -232,15 +190,10 @@ def main():
     #For no input arguments or non existing ones -> genearate all
     if len(sys.argv) == 1:
         visualize_interactive(G, node_depths)
-        visualize_tree_layout(G, node_labels, node_depths)
 
     # Generate interactive visualization -i or --interactive
     if args.interactive:
         visualize_interactive(G, node_depths)
-        
-    #Generate static visualization -s or --static
-    if args.static:
-        visualize_tree_layout(G, node_labels, node_depths)
 
     print("\nVisualization complete!")
 
