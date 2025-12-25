@@ -1,5 +1,4 @@
 #this is just an example script to create a test database.
-
 import sqlite3
 
 #connect to database (or create if not exists)

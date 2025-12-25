@@ -1,5 +1,4 @@
 #Visualize the hierarchy of links stored in a FerrumWeb SQLite database using NetworkX and Matplotlib.
-
 import sqlite3
 import sys
 import networkx as nx
@@ -50,6 +49,7 @@ def create_graph(rows, max_depth=None, shorten_urls=True):
 
     return G, node_labels, node_depths
 
+
 #Search categories matching a keyword in URLs and assign category_id
 def match_keyword(db_path='data/links.db' ):
     #Connect to database
@@ -61,6 +61,7 @@ def match_keyword(db_path='data/links.db' ):
     )
     conn.commit()
     conn.close()
+
 
 def visualize_interactive(G, node_depths, output_file='link_hierarchy.html'):
     #Visualize graph interactively using PyVis
@@ -93,7 +94,6 @@ def visualize_interactive(G, node_depths, output_file='link_hierarchy.html'):
         depth = data.get('depth')
         url = data.get('url', '') 
         color = depth_colors.get(depth, '#aaaaaa')
-
         label=url
         
         nt.add_node(
@@ -112,6 +112,7 @@ def visualize_interactive(G, node_depths, output_file='link_hierarchy.html'):
     #Add controls
     nt.show_buttons(filter_=['physics'])
     
+    #Save to HTML file
     try:
         nt.save_graph(output_file)
         print(f"Interactive visualization saved to {os.path.abspath(output_file)}")
@@ -171,7 +172,6 @@ def main():
     except Exception as e:
         print(f"Error matching keywords: {e}")
 
-
     # Load data -> cmp args.db
     print(f"Loading links from {args.db}...")
     try:
@@ -196,6 +196,7 @@ def main():
         visualize_interactive(G, node_depths)
 
     print("\nVisualization complete!")
+
 
 if __name__ == '__main__':
     main()
