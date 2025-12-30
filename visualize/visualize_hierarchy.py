@@ -8,19 +8,37 @@ from urllib.parse import urlparse
 from pyvis.network import Network
 import os
 
+#Search categories matching a keyword in URLs and assign category_id -> later outsource ans rewite in rust
+def match_keyword(db_path='data/links.db' ):
+    #Connect to database
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "UPDATE link SET category_id = (SELECT category_id FROM categories WHERE link.URL LIKE '%' || categories.category || '%')"
+    )
+    conn.commit()
+    conn.close()
 
 #Load links and their relationships from the SQLite database
+#maby load after match keyword is run -> row + category id to reference categorie name
 def load_links_from_db(db_path='data/links.db'):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
     #Fetch all links with their parent relationships
-    cursor.execute("SELECT id, URL, parent_id, depth FROM link ORDER BY depth, id")
+    cursor.execute("SELECT id, URL, parent_id, depth, category_id FROM link ORDER BY depth;")
     rows = cursor.fetchall()
     conn.close()
 
+    #test delete later
+    for row in rows:
+        print("ROWS:", row)
+    
+
     #rows format: (id, url, parent_id, depth)
     return rows
+    
 
 
 #Create a directed graph from the database rows.
@@ -33,7 +51,7 @@ def create_graph(rows, max_depth=None, shorten_urls=True):
     node_depths = {}
     
     #Build the nodes
-    for node_id, url, parent_id, depth in rows:
+    for node_id, url, parent_id, depth, category_id in rows:
         # Skip if beyond max_depth
         if max_depth is not None and depth > max_depth:
             continue
@@ -48,19 +66,6 @@ def create_graph(rows, max_depth=None, shorten_urls=True):
             G.add_edge(parent_id, node_id)
 
     return G, node_labels, node_depths
-
-
-#Search categories matching a keyword in URLs and assign category_id
-def match_keyword(db_path='data/links.db' ):
-    #Connect to database
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-
-    cursor.execute(
-        "UPDATE link SET category_id = (SELECT category_id FROM categories WHERE link.URL LIKE '%' || categories.category || '%')"
-    )
-    conn.commit()
-    conn.close()
 
 
 def visualize_interactive(G, node_depths, output_file='link_hierarchy.html'):

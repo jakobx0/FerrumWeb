@@ -6,7 +6,6 @@ pub fn init_db() -> Result<Connection> {
     //create Table for URLs -> Classifikator
     conn.execute_batch(
 
-
         "PRAGMA foreign_keys = ON;
 
         CREATE TABLE IF NOT EXISTS categories (
