@@ -8,7 +8,8 @@ from urllib.parse import urlparse
 from pyvis.network import Network
 import os
 
-#Search categories matching a keyword in URLs and assign category_id -> later outsource ans rewite in rust
+
+#Search categories matching a keyword in URLs and assign category_id -> outsource and rewite in rust
 def match_keyword(db_path='data/links.db' ):
     #Connect to database
     conn = sqlite3.connect(db_path)
@@ -30,16 +31,10 @@ def load_links_from_db(db_path='data/links.db'):
     cursor.execute("SELECT id, URL, parent_id, depth, category_id FROM link ORDER BY depth;")
     rows = cursor.fetchall()
     conn.close()
-
-    #test delete later
-    for row in rows:
-        print("ROWS:", row)
     
-
-    #rows format: (id, url, parent_id, depth)
+    #rows format: (id, url, parent_id, depth, categoery_id)
     return rows
     
-
 
 #Create a directed graph from the database rows.
 def create_graph(rows, max_depth=None, shorten_urls=True):
