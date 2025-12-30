@@ -4,6 +4,7 @@ connection = sqlite3.connect('data/links.db')
 
 cursor = connection.cursor()
 
+#is all ready covered in db.rs! -> remove 
 sql_command = """
 CREATE TABLE IF NOT EXISTS categories (
     category_id INTEGER PRIMARY KEY,
@@ -12,6 +13,7 @@ CREATE TABLE IF NOT EXISTS categories (
 cursor.execute(sql_command)
 
 categories = [
+    #genaral website categories
     (1, 'Home'),
     (2, 'About'),
     (3, 'Contact'),
@@ -41,7 +43,13 @@ categories = [
     (25, 'Facebook'),
     (26, 'LinkedIn'),
     (27, 'Instagram'),
-    (28, 'Reddit')
+    (28, 'Reddit'),
+    (29, 'GitHub'),
+    (30, 'TikTok'),
+    (31, 'Snapchat'),
+    (32, 'X'),
+    (33, 'Whatsapp'),
+    (34, 'Discord'),
     ]
 
 for c in categories:
