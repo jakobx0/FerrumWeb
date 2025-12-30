@@ -1,9 +1,7 @@
 #Visualize the hierarchy of links stored in a FerrumWeb SQLite database using NetworkX and Matplotlib.
-
 import sqlite3
 import sys
 import networkx as nx
-import matplotlib.pyplot as plt
 from collections import defaultdict
 import argparse
 from urllib.parse import urlparse
@@ -51,41 +49,18 @@ def create_graph(rows, max_depth=None, shorten_urls=True):
 
     return G, node_labels, node_depths
 
-#Tree -> visualize using spring layout
-def visualize_tree_layout(G, node_labels, node_depths, output_file='link_hierarchy_tree.png'):
-    #Check if graph has nodes
-    if len(G.nodes()) == 0:
-        print("No nodes to visualize!")
-        return
 
-    try:
-        plt.figure(figsize=(20, 12))
-    except:
-        print("Error: Unable to set figure size")
+#Search categories matching a keyword in URLs and assign category_id
+def match_keyword(db_path='data/links.db' ):
+    #Connect to database
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
 
-    try:
-        pos = nx.spring_layout(G, k=2, iterations=50, seed=42)
-    except:
-        print("Error: spring layout")
-
-    #Color nodes by depth
-    max_depth = max(node_depths.values()) if node_depths else 1
-    colors = [plt.cm.viridis(node_depths[node] / max_depth) for node in G.nodes()]
-
-    #Draw the graph
-    try:
-        nx.draw_networkx_nodes(G, pos, node_color=colors, node_size=500, alpha=0.9)
-    except:
-        print("Error: draw_networkx_nodes")
-    try:
-        nx.draw_networkx_edges(G, pos, edge_color='gray', arrows=True, arrowsize=10, alpha=0.6, width=1.5)
-    except:
-        print("Error: draw_networkx_edges")
-
-    #Plot
-    plt.title('Link Hierarchy Visualization', fontsize=16, fontweight='bold')
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
-    plt.close()
+    cursor.execute(
+        "UPDATE link SET category_id = (SELECT category_id FROM categories WHERE link.URL LIKE '%' || categories.category || '%')"
+    )
+    conn.commit()
+    conn.close()
 
 #Search categories matching a keyword in URLs and assign category_id
 def match_keyword(db_path='data/links.db' ):
@@ -130,7 +105,6 @@ def visualize_interactive(G, node_depths, output_file='link_hierarchy.html'):
         depth = data.get('depth')
         url = data.get('url', '') 
         color = depth_colors.get(depth, '#aaaaaa')
-
         label=url
         
         nt.add_node(
@@ -149,6 +123,7 @@ def visualize_interactive(G, node_depths, output_file='link_hierarchy.html'):
     #Add controls
     nt.show_buttons(filter_=['physics'])
     
+    #Save to HTML file
     try:
         nt.save_graph(output_file)
         print(f"Interactive visualization saved to {os.path.abspath(output_file)}")
@@ -199,11 +174,6 @@ def main():
         action='store_true',
         help='Generate interactive HTML visualization using PyVis'
     )
-    parser.add_argument(
-        '--static', '-s',
-        action='store_true',
-        help='Static image generation using NetworkX'
-    )
     args = parser.parse_args()
 
     #Match keywords to categories in DB
@@ -212,7 +182,6 @@ def main():
         match_keyword(args.db)
     except Exception as e:
         print(f"Error matching keywords: {e}")
-
 
     # Load data -> cmp args.db
     print(f"Loading links from {args.db}...")
@@ -232,17 +201,13 @@ def main():
     #For no input arguments or non existing ones -> genearate all
     if len(sys.argv) == 1:
         visualize_interactive(G, node_depths)
-        visualize_tree_layout(G, node_labels, node_depths)
 
     # Generate interactive visualization -i or --interactive
     if args.interactive:
         visualize_interactive(G, node_depths)
-        
-    #Generate static visualization -s or --static
-    if args.static:
-        visualize_tree_layout(G, node_labels, node_depths)
 
     print("\nVisualization complete!")
+
 
 if __name__ == '__main__':
     main()

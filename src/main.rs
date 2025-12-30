@@ -1,13 +1,15 @@
 mod crawler;
 mod db;
+
 use std::path::Path;
 use std::io;
 use std::fs::File;
 use std::time:: Instant;
 
-//read url's
+
 fn main() {
 
+    //create data folder and db file if not exists
     let path_db = Path::new("data/links.db");
     let mut _file_db = File::create(path_db).expect("error create db file");
     
