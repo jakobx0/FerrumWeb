@@ -20,17 +20,6 @@ def match_keyword(db_path='data/links.db' ):
     conn.commit()
     conn.close()
 
-#Search categories matching a keyword in URLs and assign category_id -> outsource and rewite in rust
-def match_keyword(db_path='data/links.db' ):
-    #Connect to database
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-
-    cursor.execute(
-        "UPDATE link SET category_id = (SELECT category_id FROM categories WHERE link.URL LIKE '%' || categories.category || '%')"
-    )
-    conn.commit()
-    conn.close()
 
 #Load links and their relationships from the SQLite database
 #maby load after match keyword is run -> row + category id to reference categorie name
