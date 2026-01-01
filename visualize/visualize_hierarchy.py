@@ -8,6 +8,17 @@ from urllib.parse import urlparse
 from pyvis.network import Network
 import os
 
+#Search categories matching a keyword in URLs and assign category_id -> later outsource ans rewite in rust
+def match_keyword(db_path='data/links.db' ):
+    #Connect to database
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "UPDATE link SET category_id = (SELECT category_id FROM categories WHERE link.URL LIKE '%' || categories.category || '%')"
+    )
+    conn.commit()
+    conn.close()
 
 #Search categories matching a keyword in URLs and assign category_id -> outsource and rewite in rust
 def match_keyword(db_path='data/links.db' ):
