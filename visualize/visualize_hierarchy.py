@@ -20,6 +20,18 @@ def match_keyword(db_path='data/links.db' ):
     conn.commit()
     conn.close()
 
+#Search categories matching a keyword in URLs and assign category_id -> outsource and rewite in rust
+def match_keyword(db_path='data/links.db' ):
+    #Connect to database
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "UPDATE link SET category_id = (SELECT category_id FROM categories WHERE link.URL LIKE '%' || categories.category || '%')"
+    )
+    conn.commit()
+    conn.close()
+
 #Load links and their relationships from the SQLite database
 #maby load after match keyword is run -> row + category id to reference categorie name
 def load_links_from_db(db_path='data/links.db'):
@@ -30,16 +42,10 @@ def load_links_from_db(db_path='data/links.db'):
     cursor.execute("SELECT id, URL, parent_id, depth, category_id FROM link ORDER BY depth;")
     rows = cursor.fetchall()
     conn.close()
-
-    #test delete later
-    for row in rows:
-        print("ROWS:", row)
     
-
-    #rows format: (id, url, parent_id, depth)
+    #rows format: (id, url, parent_id, depth, categoery_id)
     return rows
     
-
 
 #Create a directed graph from the database rows.
 def create_graph(rows, max_depth=None, shorten_urls=True):
