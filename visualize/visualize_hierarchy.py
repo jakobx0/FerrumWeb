@@ -8,6 +8,7 @@ from urllib.parse import urlparse
 from pyvis.network import Network
 import os
 
+
 #Search categories matching a keyword in URLs and assign category_id -> later outsource ans rewite in rust
 def match_keyword(db_path='data/links.db' ):
     #Connect to database
