@@ -44,6 +44,7 @@ def create_graph(rows, max_depth=None, shorten_urls=True):
     #Store node attributes
     node_labels = {}
     node_depths = {}
+    node_category = {}
     
     #Build the nodes
     for node_id, url, parent_id, depth, category_id in rows:
@@ -52,18 +53,19 @@ def create_graph(rows, max_depth=None, shorten_urls=True):
             continue
         label = url
         #Add node
-        G.add_node(node_id, url=url, depth=depth, label=label)
+        G.add_node(node_id, url=url, depth=depth, label=label, category_id=category_id)
         node_labels[node_id] = label
         node_depths[node_id] = depth
+        node_category[node_id] = category_id
 
         #Add edge from parent (if not root) 
         if parent_id > 0 and parent_id in G.nodes():
             G.add_edge(parent_id, node_id)
 
-    return G, node_labels, node_depths
+    return G, node_labels, node_depths, node_category
 
 
-def visualize_interactive(G, node_depths, output_file='link_hierarchy.html'):
+def visualize_interactive(G, node_depths, node_category, output_file='link_hierarchy.html'):
     #Visualize graph interactively using PyVis
     print(f"Generating interactive graph: {output_file}")
     
@@ -77,10 +79,47 @@ def visualize_interactive(G, node_depths, output_file='link_hierarchy.html'):
     max_depth = max(node_depths.values()) if node_depths else 1
 
     #implement color for diffrent keywords
-    #keyword_colors = { id.category: -> color mapping
-    #...}
+    keyword_colors = {
+        1: '#ff9999',  # Category 1 - Light Red
+        2: '#99ff99',  # Category 2 - Light Green
+        3: '#9999ff',  # Category 3 - Light Blue
+        4: '#ffff99',  # Category 4 - Light Yellow
+        5: '#ff99ff',  # Category 5 - Light Magenta
+        6: '#99ffff',  # Category 6 - Light Cyan
+        7: '#ffcc99',  # Category 7 - Light Orange
+        8: '#ffcc99',   # Category 8 - Light Orange
+        9: '#cc99ff',   # Category 9 - Light Purple
+        10: '#99ccff',  # Category 10 - Sky Blue
+        11: '#ffff99',  # Category 11 - Light Yellow
+        12: '#ff99cc',  # Category 12 - Light Pink
+        13: '#99ffcc',  # Category 13 - Mint Green
+        14: '#ccff99',  # Category 14 - Pale Green
+        15: '#ff9999',  # Category 15 - Light Red
+        16: '#9999ff',  # Category 16 - Light Blue
+        17: '#ffcccc',  # Category 17 - Pale Red
+        18: '#ccffcc',  # Category 18 - Pale Green
+        19: '#ccccff',  # Category 19 - Pale Blue
+        20: '#ffffcc',  # Category 20 - Pale Yellow
+        21: '#ffccff',  # Category 21 - Pale Magenta
+        22: '#ccffff',  # Category 22 - Pale Cyan
+
+        23: '#ff0000',  # Category 23 - YouTube Red
+        24: '#1DA1F2',  # Category 24 - Twitter Blue
+        25: '#1877F2',  # Category 25 - Facebook Blue
+        26: '#0A66C2',  # Category 26 - LinkedIn Blue
+        27: '#E4405F',  # Category 27 - Instagram Pink
+        28: '#FF4500',  # Category 28 - Reddit Orange
+        29: '#333333',  # Category 29 - GitHub Dark
+        30: '#000000',  # Category 30 - TikTok Black
+        31: '#FFFC00',  # Category 31 - Snapchat Yellow
+        32: '#000000',  # Category 32 - X Black
+        33: '#25D366',  # Category 33 - WhatsApp Green
+        34: '#5865F2',  # Category 34 - Discord Blurple
+        # Add more categories/colors as needed
+    }
     
     # Define colors for depths (simple palette) -> implement a dynamic solution
+    """
     depth_colors = {
         0: '#ff4b4b',  # Red for root
         1: '#4b79ff',  # Blue for depth 1
@@ -88,18 +127,31 @@ def visualize_interactive(G, node_depths, output_file='link_hierarchy.html'):
         3: '#ffb74b',  # Orange for depth 3
         4: '#b74bff',  # Purple for depth 4
     }
+    """
     
     #Prepare Nodes for visualization
     for node, data in G.nodes(data=True):
+        #test
+        #print (f"Node: {node}, Data: {data}")
+        
         depth = data.get('depth')
-        url = data.get('url', '') 
-        color = depth_colors.get(depth, '#aaaaaa')
+        url = data.get('url', '')
+        categorie = data.get('category_id')
+        
+        #Test
+        print(f"Category ID: {categorie}")
+        #color = depth_colors.get(depth, '#aaaaaa')
+        
+        color = keyword_colors.get(categorie, '#aaaaaa')
+        
+        #Test
+        print(f"Color: {color}")
         label=url
         
         nt.add_node(
             node, 
             label=label, 
-            title=f"URL: {url}\nDepth: {depth}", 
+            title=f"URL: {url}\nDepth: {depth}\nCategory ID: {categorie}", 
             color=color,
             size=20 if depth == 0 else 10,
             group=depth
@@ -182,18 +234,18 @@ def main():
         return
 
     #Create graph with rows from data base
-    G, node_labels, node_depths = create_graph(rows)
+    G, node_labels, node_depths, node_category = create_graph(rows)
 
     #Print statistics
     print_statistics(G, node_depths)
 
     #For no input arguments or non existing ones -> genearate all
     if len(sys.argv) == 1:
-        visualize_interactive(G, node_depths)
+        visualize_interactive(G, node_depths,node_category)
 
     # Generate interactive visualization -i or --interactive
     if args.interactive:
-        visualize_interactive(G, node_depths)
+        visualize_interactive(G, node_depths, node_category)
 
     print("\nVisualization complete!")
 
