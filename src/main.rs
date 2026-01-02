@@ -40,7 +40,7 @@ fn main() {
     //start with parent id = 1
     let parent_id = 0;
 
-    //insert input link -> db
+    //insert input link -> db (root)
     db::insert_link(&conn, &url_input, depth, parent_id).expect("Failed to insert url_input link");
 
      //Timer for Runtime
