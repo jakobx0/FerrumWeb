@@ -35,6 +35,8 @@ pub fn seaker(conn: &Connection, url_input: String, depth: usize, depth_max: usi
     //print partent_id ->> TEST
     println!("------------------------{}---------------------------", parent_id);
     //counting for next parent id
+    //TODO
+    //Get parent_id from DB, dont count them local
     parent_id = &parent_id + 1;
 
     //vector with new links
@@ -52,7 +54,9 @@ pub fn seaker(conn: &Connection, url_input: String, depth: usize, depth_max: usi
             //print discovert links
             println!("- {} Depth: {}", absolute_link, depth);
             
-            //parse absolute_link -> insert_link
+            //parse absolute_link -> insert_link 
+            //TODO
+            //insert right parent_id
             db::insert_link(conn ,&absolute_link, depth, parent_id)?;
 
             //no doubles
@@ -63,7 +67,8 @@ pub fn seaker(conn: &Connection, url_input: String, depth: usize, depth_max: usi
     }
     println!("---------------------------------------------------");
 
-    //Recursive call -> new links -> search trough new links +1 depth
+    //Recursive call -> new links -> search trough new links +1 depth 
+    //TODO Problem with depth+1 
     for link in new_links{
         seaker(conn, link, depth+1, depth_max, parent_id).expect("seaker error");
     }

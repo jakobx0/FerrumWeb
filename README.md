@@ -9,19 +9,15 @@ This is a recursive web crawler written in **Rust** that visits websites, extrac
 ## Features
 
 - Extracts all links on the site
-- Persists data in a SQLite database (table: `link`)
+- Persists data in a SQLite database (tables: `link`, `categories`)
 - Recursively crawls websites up to a configurable depth
-- Visualizes data in a static png or dynamic graph
+- Assigns category IDs based on URL keywords
+- Generates an interactive graph with category-based colors
+- Prints crawl statistics (nodes, edges, depth distribution)
 
 ## Visualization
 
 Each link is saved with its **parent URL** and **depth level**, allowing you to visualize the structured hierarchy of your crawled website:
-
-## Static visualization with NetworkX library:
-
-<div align="center">
-  <img width="720" height="770" src="png/link_hierarchy_tree.png" alt="FerrumWeb">
-</div>
 
 ## Interactive visualization with PyVis:
 
@@ -31,30 +27,24 @@ Each link is saved with its **parent URL** and **depth level**, allowing you to 
 
 ## Usage
 
-After crawling a website, visualize the link hierarchy using visualize_hierachy.py:
+After crawling a website, visualize the link hierarchy using visualize_hierarchy.py:
 
 ```bash
-#To test run
-python -u ".../link_db_test.py.py" #Fills the database
-python -u ".../visualize_hierarchy.py" --db ./data/links_test.db 
+#Optional: fill a test database
+python -u "visualize/link_db_test.py" # Fills data/links_test.db
 
-#Generate all visualization layouts
-python -u ".../visualize_hierarchy.py"
+#Optional: seed categories (run once per database)
+python -u "visualize/categories_db_fill.py"
 
-#Generate static layout
-python -u ".../visualize_hierarchy.py" -s
-python -u ".../visualize_hierarchy.py" --static
+#Visualize test database
+python -u "visualize/visualize_hierarchy.py" --db ./data/links_test.db
 
-#Genaerate interactive layout
-python -u ".../visualize_hierarchy.py" -i
-python -u ".../visualize_hierarchy.py" --interactive
+#Generate interactive layout (default when no args)
+python -u "visualize/visualize_hierarchy.py"
 ```
 
 **Output file:**
-- [static graph] `link_hierarchy_tree.png` - Hierarchical tree visualization
-- [dynamic graph] `link_hierarchy.html` - interactive graph
-
-For more information about NetworkX: https://networkx.org/
+- [interactive graph] `link_hierarchy.html` - interactive graph
 
 ## Crates
 
@@ -68,7 +58,6 @@ Install Python dependencies:
 
 ```bash
 pip install networkx
-pip install matplotlib
 pip install pyvis
 ```
 

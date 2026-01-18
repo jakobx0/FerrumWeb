@@ -1,3 +1,5 @@
+#TODO fix the graph 
+
 #Visualize the hierarchy of links stored in a FerrumWeb SQLite database using NetworkX and Matplotlib.
 import sqlite3
 import sys
@@ -211,11 +213,6 @@ def main():
         default='data/links.db',
         help='Path to SQLite database (default: data/links.db)'
     )
-    parser.add_argument(
-        '--interactive', '-i',
-        action='store_true',
-        help='Generate interactive HTML visualization using PyVis'
-    )
     args = parser.parse_args()
 
     #Match keywords to categories in DB
@@ -240,13 +237,9 @@ def main():
     #Print statistics
     print_statistics(G, node_depths)
 
-    #For no input arguments or non existing ones -> genearate all
-    if len(sys.argv) == 1:
-        visualize_interactive(G, node_depths,node_category)
+    #generate the graph view 
+    visualize_interactive(G, node_depths,node_category)
 
-    # Generate interactive visualization -i or --interactive
-    if args.interactive:
-        visualize_interactive(G, node_depths, node_category)
 
     print("\nVisualization complete!")
 
