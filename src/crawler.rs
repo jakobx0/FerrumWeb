@@ -5,7 +5,7 @@ use scraper::{Html, Selector};
 use std::error::Error;
 
 // webscraper
-pub fn seaker(conn: &Connection, url_input: String, depth: usize, depth_max: usize, mut parent_id: i32) -> Result<(), Box<dyn Error>> {
+pub fn seaker(conn: &Connection, url_input: String, depth: usize, depth_max: usize, parent_id: i64) -> Result<(), Box<dyn Error>> {
 
     //max depth to search through
     if depth > depth_max {
@@ -34,13 +34,9 @@ pub fn seaker(conn: &Connection, url_input: String, depth: usize, depth_max: usi
     println!("links found on {} (Depth: {})", url_input, depth);
     //print partent_id ->> TEST
     println!("------------------------{}---------------------------", parent_id);
-    //counting for next parent id
-    //TODO
-    //Get parent_id from DB, dont count them local
-    parent_id = &parent_id + 1;
 
-    //vector with new links
-    let mut new_links = Vec::new();
+    //vector with new links and their db ids
+    let mut new_links: Vec<(String, i64)> = Vec::new();
 
     //list all links
     for element in document.select(&selector_link){
@@ -54,14 +50,12 @@ pub fn seaker(conn: &Connection, url_input: String, depth: usize, depth_max: usi
             //print discovert links
             println!("- {} Depth: {}", absolute_link, depth);
             
-            //parse absolute_link -> insert_link 
-            //TODO
-            //insert right parent_id
-            db::insert_link(conn ,&absolute_link, depth, parent_id)?;
+            //parse absolute_link -> insert_link with correct parent_id
+            let link_id = db::insert_link(conn ,&absolute_link, depth + 1, parent_id)?;
 
             //no doubles
-            if !new_links.contains(&absolute_link){
-                new_links.push(absolute_link);
+            if !new_links.iter().any(|(u, _)| u == &absolute_link){
+                new_links.push((absolute_link, link_id));
              }
         }
     }
@@ -69,8 +63,8 @@ pub fn seaker(conn: &Connection, url_input: String, depth: usize, depth_max: usi
 
     //Recursive call -> new links -> search trough new links +1 depth 
     //TODO Problem with depth+1 
-    for link in new_links{
-        seaker(conn, link, depth+1, depth_max, parent_id).expect("seaker error");
+    for (link, link_id) in new_links{
+        seaker(conn, link, depth+1, depth_max, link_id).expect("seaker error");
     }
     Ok(())
 }

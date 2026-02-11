@@ -37,17 +37,18 @@ fn main() {
     let conn = db::init_db().expect("DB Fail");
     //start with depth 0
     let depth = 0;
-    //start with parent id = 1
-    let parent_id = 0;
+    //start with parent id = 0 (root has no parent)
+    let parent_id = 0_i64;
 
     //insert input link -> db (root)
-    db::insert_link(&conn, &url_input, depth, parent_id).expect("Failed to insert url_input link");
+    let root_id = db::insert_link(&conn, &url_input, depth, parent_id)
+        .expect("Failed to insert url_input link");
 
      //Timer for Runtime
     let start = Instant::now();
 
     //search links
-    match crawler::seaker(&conn, url_input, depth, depth_max, parent_id) {
+    match crawler::seaker(&conn, url_input, depth, depth_max, root_id) {
         Ok(_) => println!("Scraping successful!"),
         Err(e) => eprintln!("Error seaking : {}", e),
     }

@@ -22,7 +22,7 @@ Each link is saved with its **parent URL** and **depth level**, allowing you to 
 ## Interactive visualization with PyVis:
 
 <div align="center">
-  <img width="819" height="646" alt="grafik" src="https://github.com/user-attachments/assets/38f67b70-e80e-4e88-8502-75566bef5218">
+  <img width="819" height="646" alt="grafik" src="png/hierarchy.png">
 </div>
 
 ## Usage
