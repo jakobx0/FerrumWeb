@@ -1,107 +1,183 @@
-# 🕸️ FERRVMweb
+# FerrumWeb
 
-This is a recursive web crawler written in **Rust** that visits websites, extracts links, and stores them in a **SQLite database**.
+FerrumWeb is a recursive web crawler written in Rust.
+It starts from a root URL, discovers links, stores crawl results in SQLite, and provides Python-based visualization of the crawl graph.
 
-<div align ="center">
-<img width="620" height="670" alt="grafik" src="https://github.com/user-attachments/assets/ae13b986-6fbb-4978-8364-91a8d6fb77ee" />
-</div>
+## Highlights
 
-## Features
+- Recursive crawling with configurable max depth
+- Stores crawl graph in SQLite (`link` + `categories` tables)
+- Tracks parent-child URL relationships and depth
+- Optional interactive graph visualization with PyVis
+- Simple CLI workflow for quick local experiments
 
-- Extracts all links on the site
-- Persists data in a SQLite database (tables: `link`, `categories`)
-- Recursively crawls websites up to a configurable depth
-- Assigns category IDs based on URL keywords
-- Generates an interactive graph with category-based colors
-- Prints crawl statistics (nodes, edges, depth distribution)
+## Project Structure
 
-## Visualization
-
-Each link is saved with its **parent URL** and **depth level**, allowing you to visualize the structured hierarchy of your crawled website:
-
-## Interactive visualization with PyVis:
-
-<div align="center">
-  <img width="819" height="646" alt="grafik" src="png/hierarchy.png">
-</div>
-
-## Usage
-
-After crawling a website, visualize the link hierarchy using visualize_hierarchy.py:
-
-```bash
-#Optional: fill a test database
-python -u "visualize/link_db_test.py" # Fills data/links_test.db
-
-#Optional: seed categories (run once per database)
-python -u "visualize/categories_db_fill.py"
-
-#Visualize test database
-python -u "visualize/visualize_hierarchy.py" --db ./data/links_test.db
-
-#Generate interactive layout (default when no args)
-python -u "visualize/visualize_hierarchy.py"
+```text
+FerrumWeb/
+├── src/
+│   ├── main.rs           # CLI input flow + crawl entrypoint
+│   ├── crawler.rs        # Recursive crawler logic
+│   └── db.rs             # SQLite schema + inserts
+├── visualize/
+│   ├── visualize_hierarchy.py
+│   ├── categories_db_fill.py
+│   └── link_db_test.py
+├── data/
+│   ├── links.db
+│   └── links_test.db
+└── Cargo.toml
 ```
 
-**Output file:**
-- [interactive graph] `link_hierarchy.html` - interactive graph
+## Requirements
 
-## Crates
+### Rust crawler
 
-- [`reqwest`](https://docs.rs/reqwest/) – HTTP client  
-- [`scraper`](https://docs.rs/scraper/) – HTML parser  
-- [`rusqlite`](https://docs.rs/rusqlite/) – SQLite database integration 
+- Rust toolchain (stable recommended)
+- Build essentials for your platform
 
-## Installation
+Install Rust:
 
-Install Python dependencies:
+- https://www.rust-lang.org/tools/install
+
+### Python visualization
+
+- Python 3.9+
+- `networkx`
+- `pyvis`
+
+## Quick Start
+
+### 1) Clone and enter project
 
 ```bash
-pip install networkx
-pip install pyvis
-```
-
-PyVis: https://pyvis.readthedocs.io/en/latest/
-NetworkX: https://networkx.org/
-
-```bash
-git clone https://github.com/jakobx0/FerrumWeb
+git clone https://github.com/jakobx0/FerrumWeb.git
 cd FerrumWeb
-cargo run (if rust is not installed: https://www.rust-lang.org/tools/install )
 ```
 
-Rust help: https://users.rust-lang.org/t/link-exe-not-found-despite-build-tools-already-installed/47080
+### 2) Run crawler
 
-## Troubleshooting:
+```bash
+cargo run
+```
 
-On Windows the Error: `linker 'link.exe' not found` can be solved via:
+The CLI asks for:
+
+1. Start URL (e.g. `https://example.com`)
+2. Maximum depth (e.g. `2`)
+
+Results are written to:
+
+- `data/links.db`
+
+## Python Environment (recommended)
+
+Create and activate a virtual environment before installing visualization dependencies.
+
+### Linux/macOS
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install networkx pyvis
+```
+
+### Windows (PowerShell)
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install --upgrade pip
+pip install networkx pyvis
+```
+
+## Visualization Workflow
+
+### Option A: Use test data
+
+```bash
+python -u "visualize/link_db_test.py"
+python -u "visualize/categories_db_fill.py"
+python -u "visualize/visualize_hierarchy.py" --db ./data/links_test.db
+```
+
+### Option B: Use crawler output
+
+```bash
+python -u "visualize/categories_db_fill.py"
+python -u "visualize/visualize_hierarchy.py" --db ./data/links.db
+```
+
+Output:
+
+- `link_hierarchy.html` (interactive graph)
+
+Open it in your browser.
+
+## Database Schema
+
+FerrumWeb creates these tables:
+
+### `categories`
+
+- `category_id INTEGER PRIMARY KEY`
+- `category TEXT UNIQUE`
+
+### `link`
+
+- `id INTEGER PRIMARY KEY`
+- `url TEXT NOT NULL`
+- `parent_id INTEGER`
+- `depth INTEGER`
+- `category_id INTEGER` (FK to `categories.category_id`)
+
+## Known Limitations
+
+- Currently processes only absolute `http://` and `https://` links
+- No URL deduplication strategy in crawler/DB yet
+- Error handling can be improved in recursive path
+- Category matching logic in Python is currently simplistic
+
+## Troubleshooting
+
+### `cargo: command not found`
+
+Install Rust and restart shell:
+
+```bash
+rustup --version
+cargo --version
+```
+
+### Linux OpenSSL build issues (`openssl-sys`)
+
+```bash
+sudo apt update
+sudo apt install -y libssl-dev pkg-config
+```
+
+### Windows linker error: `link.exe not found`
+
+Try GNU toolchain fallback:
 
 ```bash
 rustup toolchain install stable-x86_64-pc-windows-gnu
 rustup default stable-x86_64-pc-windows-gnu
 ```
-For Linux the Error: `failed to run custom build command for 'openssl-sys v0.9.109'`:
 
-```bash
-sudo apt install libssl-dev
-```
+## Contributing
 
-## DB Usage
+Contributions are welcome.
 
-To analyse the DB file simply open a DBMS of your choice.
-For Example the **DB Browser for SQLite:**  https://sqlitebrowser.org/
+Suggested flow:
 
-<div align="center">
-  <img width="520" height="300" src="png/db_tabels.png" alt="FerrumWeb">
-</div>
+1. Fork the repository
+2. Create a feature branch
+3. Make focused commits
+4. Open a pull request with clear description and test steps
 
-Example SQL Queries:
+## License
 
-  Count of distinct URLs:
-  ```sql
-  SELECT COUNT(DISTINCT URL) FROM link;
-  ```
-  Grouped links by frequency:
-  ```sql
-    SELECT URL, COUNT(*) AS count FROM link GROUP BY URL ORDER BY count DESC;
-  ```
+No explicit license file is currently present in this repository.
+If you intend to reuse or distribute this code, clarify licensing with the repository owner first.
