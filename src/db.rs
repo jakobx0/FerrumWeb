@@ -1,7 +1,7 @@
 use rusqlite::{params, Connection, Result};
 
 pub fn init_db() -> Result<Connection> {
-    //opens an connection -> links.db
+    //opens an connection -> links.db and creates it if not exists
     let conn = Connection::open("data/links.db")?;
     //create Table for URLs -> Classifikator
     conn.execute_batch(

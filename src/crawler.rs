@@ -3,9 +3,10 @@ use reqwest;
 use rusqlite::Connection;
 use scraper::{Html, Selector};
 use std::error::Error;
+use std::collections::HashSet;
 
 // webscraper
-pub fn seaker(conn: &Connection, url_input: String, depth: usize, depth_max: usize, parent_id: i64) -> Result<(), Box<dyn Error>> {
+pub fn seaker(conn: &Connection, url_input: String, depth: usize, depth_max: usize, parent_id: i64, visited: &mut HashSet<String>) -> Result<(), Box<dyn Error>> {
 
     //max depth to search through
     if depth > depth_max {
@@ -35,7 +36,7 @@ pub fn seaker(conn: &Connection, url_input: String, depth: usize, depth_max: usi
     //print partent_id ->> TEST
     println!("------------------------{}---------------------------", parent_id);
 
-    //vector with new links and their db ids
+    //vector with new links and their db ids -> new creation with every looop!
     let mut new_links: Vec<(String, i64)> = Vec::new();
 
     //list all links
@@ -47,24 +48,25 @@ pub fn seaker(conn: &Connection, url_input: String, depth: usize, depth_max: usi
         }else{
             continue;
         };
-            //print discovert links
-            println!("- {} Depth: {}", absolute_link, depth);
-            
-            //parse absolute_link -> insert_link with correct parent_id
-            let link_id = db::insert_link(conn ,&absolute_link, depth + 1, parent_id)?;
-
-            //no doubles
-            if !new_links.iter().any(|(u, _)| u == &absolute_link){
-                new_links.push((absolute_link, link_id));
-             }
+        
+        if visited.contains(&absolute_link) {
+            continue;
+        }
+        
+        println!("- {} Depth: {}", absolute_link, depth);
+        //parse absolute_link -> insert_link with correct parent_id
+        let link_id = db::insert_link(conn ,&absolute_link, depth + 1, parent_id)?;
+        visited.insert(absolute_link.clone());
+        new_links.push((absolute_link, link_id));
         }
     }
+    
     println!("---------------------------------------------------");
 
     //Recursive call -> new links -> search trough new links +1 depth 
     //TODO Problem with depth+1 
     for (link, link_id) in new_links{
-        seaker(conn, link, depth+1, depth_max, link_id).expect("seaker error");
+        seaker(conn, link, depth+1, depth_max, link_id, visited).expect("seaker error");
     }
     Ok(())
 }

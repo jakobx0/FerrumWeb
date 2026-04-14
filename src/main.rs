@@ -1,18 +1,20 @@
 mod crawler;
 mod db;
 
+use std::collections::HashSet;
 use std::path::Path;
 use std::io;
-use std::fs::File;
+use std::fs;
 use std::time:: Instant;
 
 
 fn main() {
 
     //create data folder and db file if not exists
-    let path_db = Path::new("data/links.db");
-    let mut _file_db = File::create(path_db).expect("error create db file");
-    
+    let path_db = Path::new("data");
+    //let mut _file_db = File::create(path_db).expect("error create db file");
+    fs::create_dir_all(path_db).expect("Failed to create data directory");
+
     //commandline input
     let mut url_input = String::new();
     let mut depth_str = String::new();
@@ -40,6 +42,10 @@ fn main() {
     //start with parent id = 0 (root has no parent)
     let parent_id = 0_i64;
 
+    //keep track of visited links -> avoid loops
+    let mut visited = HashSet::new();
+    visited.insert(url_input.clone());
+
     //insert input link -> db (root)
     let root_id = db::insert_link(&conn, &url_input, depth, parent_id)
         .expect("Failed to insert url_input link");
@@ -48,7 +54,7 @@ fn main() {
     let start = Instant::now();
 
     //search links
-    match crawler::seaker(&conn, url_input, depth, depth_max, root_id) {
+    match crawler::seaker(&conn, url_input, depth, depth_max, root_id, &mut visited) {
         Ok(_) => println!("Scraping successful!"),
         Err(e) => eprintln!("Error seaking : {}", e),
     }
