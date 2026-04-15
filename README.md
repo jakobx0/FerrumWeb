@@ -1,24 +1,30 @@
 # FerrumWeb
 
 FerrumWeb is a recursive web crawler written in Rust.
-It starts from a root URL, discovers links, stores crawl results in SQLite, and provides Python-based visualization of the crawl graph.
+It starts from a root URL, discovers links, stores crawl results in SQLite, and provides Python based visualization of the crawl graph.
 
 ## Highlights
 
-- Recursive crawling with configurable max depth
-- Stores crawl graph in SQLite (`link` + `categories` tables)
-- Tracks parent-child URL relationships and depth
-- Optional interactive graph visualization with PyVis
-- Simple CLI workflow for quick local experiments
+- Recursive crawling with configurable maximum depth
+- Stores crawl data in SQLite using `link` and `categories` tables
+- Tracks parent child URL relationships and depth
+- Generates an interactive hierarchy graph with PyVis
+- Simple command line workflow for local experiments
+
+## Visualization Preview
+
+<div align="center">
+  <img width="819" height="646" alt="FerrumWeb hierarchy graph" src="png/hierarchy.png">
+</div>
 
 ## Project Structure
 
 ```text
 FerrumWeb/
 ├── src/
-│   ├── main.rs           # CLI input flow + crawl entrypoint
-│   ├── crawler.rs        # Recursive crawler logic
-│   └── db.rs             # SQLite schema + inserts
+│   ├── main.rs                  # CLI input flow and crawl entry point
+│   ├── crawler.rs               # Recursive crawler logic
+│   └── db.rs                    # SQLite schema and insert helpers
 ├── visualize/
 │   ├── visualize_hierarchy.py
 │   ├── categories_db_fill.py
@@ -26,6 +32,9 @@ FerrumWeb/
 ├── data/
 │   ├── links.db
 │   └── links_test.db
+├── png/
+│   ├── hierarchy.png
+│   └── db_tabels.png
 └── Cargo.toml
 ```
 
@@ -33,7 +42,7 @@ FerrumWeb/
 
 ### Rust crawler
 
-- Rust toolchain (stable recommended)
+- Rust toolchain, stable recommended
 - Build essentials for your platform
 
 Install Rust:
@@ -42,20 +51,20 @@ Install Rust:
 
 ### Python visualization
 
-- Python 3.9+
+- Python 3.9 or newer
 - `networkx`
 - `pyvis`
 
 ## Quick Start
 
-### 1) Clone and enter project
+### 1) Clone and enter the project
 
 ```bash
 git clone https://github.com/jakobx0/FerrumWeb.git
 cd FerrumWeb
 ```
 
-### 2) Run crawler
+### 2) Run the crawler
 
 ```bash
 cargo run
@@ -63,33 +72,33 @@ cargo run
 
 The CLI asks for:
 
-1. Start URL (e.g. `https://example.com`)
-2. Maximum depth (e.g. `2`)
+1. Start URL, for example `https://example.com`
+2. Maximum depth, for example `2`
 
-Results are written to:
+Crawl results are written to:
 
 - `data/links.db`
 
-## Python Environment (recommended)
+## Python Environment for Visualization
 
-Create and activate a virtual environment before installing visualization dependencies.
+The virtual environment is stored in `visualize`.
 
-### Linux/macOS
+### Linux and macOS
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install --upgrade pip
-pip install networkx pyvis
+python3 -m venv ./visualize/.venv
+source ./visualize/.venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install networkx pyvis
 ```
 
-### Windows (PowerShell)
+### Windows PowerShell
 
 ```powershell
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-pip install --upgrade pip
-pip install networkx pyvis
+python -m venv .\visualize\.venv
+.\visualize\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install networkx pyvis
 ```
 
 ## Visualization Workflow
@@ -111,9 +120,9 @@ python -u "visualize/visualize_hierarchy.py" --db ./data/links.db
 
 Output:
 
-- `link_hierarchy.html` (interactive graph)
+- `link_hierarchy.html` interactive graph
 
-Open it in your browser.
+Open `link_hierarchy.html` in your browser.
 
 ## Database Schema
 
@@ -130,36 +139,42 @@ FerrumWeb creates these tables:
 - `url TEXT NOT NULL`
 - `parent_id INTEGER`
 - `depth INTEGER`
-- `category_id INTEGER` (FK to `categories.category_id`)
+- `category_id INTEGER` foreign key to `categories.category_id`
+
+## Database Example View
+
+<div align="center">
+  <img width="520" height="300" src="png/db_tabels.png" alt="FerrumWeb database tables">
+</div>
 
 ## Known Limitations
 
 - Currently processes only absolute `http://` and `https://` links
-- No URL deduplication strategy in crawler/DB yet
-- Error handling can be improved in recursive path
+- No URL deduplication strategy in crawler or database yet
+- Error handling in recursive crawl paths can be improved
 - Category matching logic in Python is currently simplistic
 
 ## Troubleshooting
 
 ### `cargo: command not found`
 
-Install Rust and restart shell:
+Install Rust and restart your shell:
 
 ```bash
 rustup --version
 cargo --version
 ```
 
-### Linux OpenSSL build issues (`openssl-sys`)
+### Linux OpenSSL build issues with `openssl-sys`
 
 ```bash
 sudo apt update
 sudo apt install -y libssl-dev pkg-config
 ```
 
-### Windows linker error: `link.exe not found`
+### Windows linker error `link.exe not found`
 
-Try GNU toolchain fallback:
+Try the GNU toolchain fallback:
 
 ```bash
 rustup toolchain install stable-x86_64-pc-windows-gnu
@@ -170,14 +185,9 @@ rustup default stable-x86_64-pc-windows-gnu
 
 Contributions are welcome.
 
-Suggested flow:
+Suggested workflow:
 
 1. Fork the repository
 2. Create a feature branch
 3. Make focused commits
-4. Open a pull request with clear description and test steps
-
-## License
-
-No explicit license file is currently present in this repository.
-If you intend to reuse or distribute this code, clarify licensing with the repository owner first.
+4. Open a pull request with a clear description and test steps
