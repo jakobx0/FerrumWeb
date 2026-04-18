@@ -6,16 +6,6 @@ connection = sqlite3.connect('data/links_test.db')
 #create a pointer to execute SQL commands
 cursor = connection.cursor()
 
-#create table
-sql_command = """
-CREATE TABLE IF NOT EXISTS link (
-    id INTEGER PRIMARY KEY,
-    url text not null,
-    parent_id INTEGER,
-    depth INTEGER);"""
-
-cursor.execute(sql_command)
-
 #example data
 staff_links = [
     (1, 'http://example.com', 0, 0),    

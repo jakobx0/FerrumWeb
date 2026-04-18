@@ -1,16 +1,7 @@
 import sqlite3
 
 connection = sqlite3.connect('data/links.db')
-
 cursor = connection.cursor()
-
-#is all ready covered in db.rs! -> remove 
-sql_command = """
-CREATE TABLE IF NOT EXISTS categories (
-    category_id INTEGER PRIMARY KEY,
-    category TEXT UNIQUE);"""   
-
-cursor.execute(sql_command)
 
 categories = [
     #genaral website categories
