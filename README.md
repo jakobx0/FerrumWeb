@@ -4,7 +4,7 @@ FerrumWeb is a recursive web crawler written in Rust.
 It starts from a root URL, discovers links, stores crawl results in SQLite, and provides Python based visualization of the crawl graph.
 
 <div align="center">
-  <img width="819" height="646" alt="FerrumWeb" src="png/cmd.png">
+  <img width="600" height="700" alt="FerrumWeb" src="png/cmd.png">
 </div>
 
 ## Highlights
