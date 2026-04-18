@@ -3,6 +3,10 @@
 FerrumWeb is a recursive web crawler written in Rust.
 It starts from a root URL, discovers links, stores crawl results in SQLite, and provides Python based visualization of the crawl graph.
 
+<div align="center">
+  <img width="819" height="646" alt="FerrumWeb" src="png/cmd.png">
+</div>
+
 ## Highlights
 
 - Recursive crawling with configurable maximum depth
@@ -12,6 +16,8 @@ It starts from a root URL, discovers links, stores crawl results in SQLite, and 
 - Simple command line workflow for local experiments
 
 ## Visualization Preview
+
+Each link is saved with its parent URL and depth level, allowing you to visualize the structured hierarchy of your crawled website.
 
 <div align="center">
   <img width="819" height="646" alt="FerrumWeb hierarchy graph" src="png/hierarchy.png">
@@ -34,6 +40,7 @@ FerrumWeb/
 │   └── links_test.db
 ├── png/
 │   ├── hierarchy.png
+|   ├──  cmd.png
 │   └── db_tabels.png
 └── Cargo.toml
 ```
@@ -146,13 +153,6 @@ FerrumWeb creates these tables:
 <div align="center">
   <img width="520" height="300" src="png/db_tabels.png" alt="FerrumWeb database tables">
 </div>
-
-## Known Limitations
-
-- Currently processes only absolute `http://` and `https://` links
-- No URL deduplication strategy in crawler or database yet
-- Error handling in recursive crawl paths can be improved
-- Category matching logic in Python is currently simplistic
 
 ## Troubleshooting
 
