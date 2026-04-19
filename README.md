@@ -20,7 +20,7 @@ It starts from a root URL, discovers links, stores crawl results in SQLite, and 
 Each link is saved with its parent URL and depth level, allowing you to visualize the structured hierarchy of your crawled website.
 
 <div align="center">
-  <img width="719" height="546" alt="FerrumWeb hierarchy graph" src="png/hierarchy.png">
+  <img width="750" height="546" alt="FerrumWeb hierarchy graph" src="png/hierarchy.png">
 </div>
 
 ## Project Structure
