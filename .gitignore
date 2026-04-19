@@ -18,3 +18,4 @@ build/
 link_hierarchy_*.png
 .codex
 link_hierarchy.html
+data/links.db
