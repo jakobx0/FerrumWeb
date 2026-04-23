@@ -298,15 +298,51 @@ def display_legend(output_file, used_categories):
 def visualize_interactive(G, node_depths, node_category, output_file="link_hierarchy.html"):
     print(f"Generating interactive graph: {output_file}")
 
-    nt = Network(height="90vh", width="100%", bgcolor="#222222", font_color="white", select_menu=True)
+    nt = Network(
+        height="90vh",
+        width="100%",
+        bgcolor="#222222",
+        font_color="white",
+        select_menu=True,
+        layout=True,
+    )
+    #TODO: refactor physics
+    """
     nt.barnes_hut(
-        gravity=-2000,
+        gravity=-2000, #-2000
         central_gravity=0.3,
         spring_length=95,
         spring_strength=0.1,
         damping=0.09,
         overlap=0,
     )
+    """
+    """
+    nt.force_atlas_2based(
+        gravity=-50,
+        central_gravity=0,
+        spring_length=0,
+        spring_strength=0.08,
+        damping=1,
+    )
+    """
+
+    #tree layout with physics off to preserve hierarchy and improve readability, especially for larger graphs.
+    
+    nt.options.layout.hierarchical.direction = "UD"
+    nt.options.layout.hierarchical.sortMethod = "directed"
+    nt.options.layout.hierarchical.levelSeparation = 180
+    nt.options.layout.hierarchical.nodeSpacing = 140
+    nt.options.layout.hierarchical.treeSpacing = 220
+    nt.options.layout.hierarchical.blockShifting = True
+    nt.options.layout.hierarchical.edgeMinimization = True
+    nt.options.layout.hierarchical.parentCentralization = True
+    nt.options.layout.hierarchical.shakeTowards = "roots"
+    nt.options.physics.enabled = False
+    
+
+    
+
 
     used_categories = {}
 
@@ -330,6 +366,15 @@ def visualize_interactive(G, node_depths, node_category, output_file="link_hiera
         nt.add_edge(source, target, color="#555555")
 
     nt.show_buttons(filter_=["physics"])
+    
+    #neighbor map
+    neighbor_map = nt.get_adj_list()
+    for node in nt.nodes:
+        neighbors = neighbor_map.get(node["id"], [])
+        #form string listing neighbor IDs 
+        node["title"] += f"\nNeighbors: {', '.join(str(neighbor) for neighbor in neighbors)}"
+        #weight node size
+        node["value"] = len(neighbors) + 2
 
     try:
         nt.save_graph(output_file)
