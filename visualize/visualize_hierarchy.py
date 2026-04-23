@@ -12,6 +12,7 @@ from pyvis.network import Network
 #Define categories with associated keywords and colors for visualization.
 #TODO - expand categories and keywords over time based on real data patterns.
 CATEGORY_DEFINITIONS = [
+    (0, "Root", "#FF7F24", ("root",)),
     (1, "Home", "#ff9999", ("home",)),
     (2, "About", "#99ff99", ("about",)),
     (3, "Contact", "#9999ff", ("contact",)),
@@ -34,11 +35,11 @@ CATEGORY_DEFINITIONS = [
     (20, "Developers", "#ffffcc", ("developer", "developers", "dev")),
     (21, "Documentation", "#ffccff", ("documentation", "docs")),
     (22, "API", "#ccffff", ("api",)),
-    (23, "YouTube", "#ff0000", ("youtube.com", "youtu.be", "youtube")),
+    (23, "YouTube", "#EE3A8C", ("youtube.com", "youtu.be", "youtube")),
     (24, "Twitter", "#1DA1F2", ("twitter.com", "twitter")),
     (25, "Facebook", "#1877F2", ("facebook.com", "facebook")),
     (26, "LinkedIn", "#0A66C2", ("linkedin.com", "linkedin")),
-    (27, "Instagram", "#E4405F", ("instagram.com", "instagram")),
+    (27, "Instagram", "#9A32CD", ("instagram.com", "instagram")),
     (28, "Reddit", "#FF4500", ("reddit.com", "reddit")),
     (29, "GitHub", "#333333", ("github.com", "github")),
     (30, "TikTok", "#000000", ("tiktok.com", "tiktok")),
@@ -46,6 +47,8 @@ CATEGORY_DEFINITIONS = [
     (32, "X", "#000000", ("x.com",)),
     (33, "WhatsApp", "#25D366", ("whatsapp.com", "wa.me", "whatsapp")),
     (34, "Discord", "#5865F2", ("discord.gg", "discord.com", "discord")),
+    (35, "admin", "#ff0000", ("admin", "administrator")),
+    (36, "login", "#ff0000", ("login", "signin", "signup", "register")),
 ]
 
 CATEGORY_LABELS = {category_id: label for category_id, label, _, _ in CATEGORY_DEFINITIONS}
@@ -144,7 +147,7 @@ def infer_category_id(url):
     path = parsed_url.path.strip("/").lower()
 
     if not path:
-        return 1
+        return 0
 
     searchable_text = f"{hostname}/{path}"
     path_segments = [segment for segment in path.split("/") if segment]
