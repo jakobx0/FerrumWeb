@@ -340,10 +340,6 @@ def visualize_interactive(G, node_depths, node_category, output_file="link_hiera
     nt.options.layout.hierarchical.shakeTowards = "roots"
     nt.options.physics.enabled = False
     
-
-    
-
-
     used_categories = {}
 
     for node, data in G.nodes(data=True):
